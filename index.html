@@ -23,13 +23,9 @@
       --text2: #a09a90;
       --text3: #6b6560;
       --accent: #c8a96e;
-      --accent-bg: rgba(200,169,110,0.12);
-      --green: #7db87a;
-      --green-bg: rgba(125,184,122,0.12);
-      --amber: #d4954a;
-      --amber-bg: rgba(212,149,74,0.12);
       --red: #c46a6a;
       --red-bg: rgba(196,106,106,0.12);
+      --green: #7db87a;
       --radius: 14px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -44,11 +40,9 @@
       min-height: 100dvh;
       max-width: 430px;
       margin: 0 auto;
-      position: relative;
       overflow-x: hidden;
     }
 
-    /* Top safe area fill */
     .status-bar-fill {
       height: var(--safe-top);
       background: var(--bg);
@@ -93,7 +87,6 @@
       min-height: 100dvh;
     }
 
-    /* Bottom nav */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -123,145 +116,84 @@
       font-size: 10px;
       transition: color 0.15s;
     }
-
     .nav-btn.active { color: var(--accent); }
     .nav-btn svg { width: 22px; height: 22px; }
 
-    /* Panels */
     .panel { display: none; padding: 0 16px; }
     .panel.active { display: block; }
 
-    /* Stats row */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      padding: 16px 0 8px;
-    }
-
-    .stat-card {
+    .stat-banner {
+      margin: 16px 0 12px;
+      padding: 14px 16px;
       background: var(--bg2);
       border: 0.5px solid var(--border);
       border-radius: var(--radius);
-      padding: 12px;
-      text-align: center;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
     }
-
-    .stat-num {
+    .stat-banner .num {
       font-family: 'Lora', serif;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 600;
       color: var(--accent);
     }
+    .stat-banner .label { font-size: 14px; color: var(--text2); }
 
-    .stat-label {
-      font-size: 11px;
-      color: var(--text3);
-      margin-top: 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Filter chips */
-    .filter-row {
+    .book-list {
       display: flex;
-      gap: 6px;
-      padding: 8px 0 12px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .filter-row::-webkit-scrollbar { display: none; }
-
-    .chip {
-      flex-shrink: 0;
-      padding: 5px 14px;
-      border-radius: 100px;
-      font-size: 13px;
-      border: 0.5px solid var(--border);
-      background: none;
-      color: var(--text2);
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-
-    .chip.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #0f0e0c;
-      font-weight: 500;
-    }
-
-    /* Book cards */
-    .book-list { display: flex; flex-direction: column; gap: 8px; }
-
-    .book-card {
-      background: var(--bg2);
+      flex-direction: column;
       border: 0.5px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      transition: border-color 0.15s;
-      -webkit-user-select: none;
+      overflow: hidden;
+      margin-bottom: 16px;
     }
 
-    .book-card:active { border-color: var(--border2); }
-
-    .spine {
-      width: 40px;
-      height: 56px;
-      border-radius: 5px;
-      flex-shrink: 0;
+    .book-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-      font-family: 'Lora', serif;
-      font-style: italic;
+      padding: 13px 14px;
+      gap: 12px;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg2);
+    }
+    .book-row:last-child { border-bottom: none; }
+    .book-row:active { background: var(--bg3); }
+
+    .row-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
-    .book-info { flex: 1; min-width: 0; }
+    .row-info { flex: 1; min-width: 0; }
 
-    .book-title {
+    .row-title {
       font-family: 'Lora', serif;
       font-size: 15px;
       font-weight: 600;
       color: var(--text);
-      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .book-author {
-      font-size: 13px;
-      color: var(--text2);
-      margin-top: 3px;
+    .row-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .book-meta {
-      display: flex;
-      gap: 5px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .badge {
+    .row-date {
       font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 100px;
-      font-weight: 400;
+      color: var(--text3);
+      flex-shrink: 0;
+      text-align: right;
     }
-
-    .badge.read { background: var(--green-bg); color: var(--green); }
-    .badge.reading { background: var(--amber-bg); color: var(--amber); }
-    .badge.unread { background: rgba(255,255,255,0.06); color: var(--text3); }
-
-    .badge.genre { background: var(--accent-bg); color: var(--accent); }
-    .badge.year { background: rgba(255,255,255,0.04); color: var(--text3); }
 
     .delete-btn {
       background: none;
@@ -269,26 +201,12 @@
       color: var(--text3);
       cursor: pointer;
       padding: 4px;
-      border-radius: 8px;
       flex-shrink: 0;
+      line-height: 0;
       transition: color 0.15s;
     }
     .delete-btn:active { color: var(--red); }
 
-    /* Status selector inline */
-    .status-select {
-      background: rgba(255,255,255,0.05);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      color: var(--text2);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      padding: 3px 6px;
-      cursor: pointer;
-      margin-left: auto;
-    }
-
-    /* Empty state */
     .empty {
       text-align: center;
       padding: 48px 20px;
@@ -298,7 +216,6 @@
     .empty h3 { font-family: 'Lora', serif; font-size: 17px; color: var(--text2); margin-bottom: 6px; }
     .empty p { font-size: 13px; line-height: 1.6; }
 
-    /* Add form */
     .form-section { padding: 16px 0; }
     .section-title {
       font-family: 'Lora', serif;
@@ -310,9 +227,9 @@
     }
 
     .field { margin-bottom: 12px; }
-    .field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 5px; letter-spacing: 0.2px; }
+    .field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 5px; }
 
-    .field input, .field select, .field textarea {
+    .field input, .field textarea {
       width: 100%;
       background: var(--bg2);
       border: 0.5px solid var(--border);
@@ -326,15 +243,9 @@
       -webkit-appearance: none;
       appearance: none;
     }
-
-    .field input:focus, .field select:focus, .field textarea:focus {
-      border-color: var(--accent);
-    }
-
+    .field input:focus, .field textarea:focus { border-color: var(--accent); }
+    .field input[type="date"] { color-scheme: dark; }
     .field textarea { resize: none; min-height: 80px; line-height: 1.5; }
-
-    .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a09a90' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .btn-add {
@@ -353,7 +264,34 @@
     }
     .btn-add:active { opacity: 0.85; transform: scale(0.99); }
 
-    /* Toast */
+    .search-wrap { position: relative; padding: 14px 0 10px; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 12px 14px 12px 40px;
+      outline: none;
+      -webkit-appearance: none;
+      transition: border-color 0.15s;
+    }
+    .search-wrap input:focus { border-color: var(--accent); }
+
+    .result-banner {
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .result-banner.found { background: rgba(125,184,122,0.12); color: var(--green); }
+    .result-banner.not-found { background: var(--red-bg); color: var(--red); }
+    .result-banner p { font-size: 12px; font-weight: 400; margin-top: 3px; opacity: 0.8; }
+
     .toast {
       position: fixed;
       bottom: calc(var(--safe-bottom) + 90px);
@@ -371,55 +309,9 @@
       white-space: nowrap;
       z-index: 200;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { color: var(--green); }
     .toast.error { color: var(--red); }
-
-    /* Search */
-    .search-wrap {
-      position: relative;
-      padding: 14px 0 10px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text3);
-      pointer-events: none;
-    }
-
-    .search-wrap input {
-      width: 100%;
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      padding: 12px 14px 12px 40px;
-      outline: none;
-      -webkit-appearance: none;
-      transition: border-color 0.15s;
-    }
-
-    .search-wrap input:focus { border-color: var(--accent); }
-
-    .search-result-banner {
-      padding: 12px 14px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .search-result-banner.found { background: var(--green-bg); color: var(--green); }
-    .search-result-banner.not-found { background: var(--red-bg); color: var(--red); }
-    .search-result-banner p { font-size: 12px; font-weight: 400; margin-top: 3px; opacity: 0.8; }
   </style>
 </head>
 <body>
@@ -432,23 +324,15 @@
 </div>
 
 <div class="scroll-area">
-  <!-- Library Panel -->
+
   <div id="panel-library" class="panel active">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-label">Books</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-read">0</div><div class="stat-label">Read</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-unread">0</div><div class="stat-label">Unread</div></div>
+    <div class="stat-banner">
+      <span class="num" id="s-total">0</span>
+      <span class="label">books in your library</span>
     </div>
-    <div class="filter-row">
-      <button class="chip active" onclick="setFilter('all',this)">All</button>
-      <button class="chip" onclick="setFilter('read',this)">Read</button>
-      <button class="chip" onclick="setFilter('reading',this)">Reading</button>
-      <button class="chip" onclick="setFilter('unread',this)">Unread</button>
-    </div>
-    <div id="book-list" class="book-list"></div>
+    <div id="book-list"></div>
   </div>
 
-  <!-- Add Panel -->
   <div id="panel-add" class="panel">
     <div class="form-section">
       <div class="section-title">New book</div>
@@ -466,27 +350,18 @@
           <input type="text" id="f-genre" placeholder="Fiction" autocomplete="off" />
         </div>
         <div class="field">
-          <label>Year</label>
-          <input type="number" id="f-year" placeholder="2024" min="1000" max="2099" />
+          <label>Date purchased</label>
+          <input type="date" id="f-date" />
         </div>
       </div>
       <div class="field">
-        <label>Status</label>
-        <select id="f-status">
-          <option value="unread">Unread — haven't started</option>
-          <option value="reading">Reading — in progress</option>
-          <option value="read">Read — finished</option>
-        </select>
-      </div>
-      <div class="field">
         <label>Notes (optional)</label>
-        <textarea id="f-notes" placeholder="Where you bought it, your rating, thoughts..."></textarea>
+        <textarea id="f-notes" placeholder="Where you bought it, thoughts..."></textarea>
       </div>
       <button class="btn-add" onclick="addBook()">Add to library</button>
     </div>
   </div>
 
-  <!-- Search Panel -->
   <div id="panel-search" class="panel">
     <div class="search-wrap">
       <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -494,9 +369,9 @@
     </div>
     <div id="search-out"></div>
   </div>
+
 </div>
 
-<!-- Bottom Nav -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-library" onclick="switchTab('library')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -515,13 +390,9 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  const SPINE_COLORS = [
-    ['#3d2b1f','#c8a96e'],['#1e2d1e','#7db87a'],['#2b1e2d','#b87db8'],
-    ['#1e2535','#7aa0c8'],['#2d1e1e','#c87a7a'],['#2a2518','#c8b96e']
-  ];
+  const DOT_COLORS = ['#c8a96e','#7db87a','#b87db8','#7aa0c8','#c87a7a','#c8b96e'];
 
   let books = [];
-  let filter = 'all';
 
   function load() {
     try { books = JSON.parse(localStorage.getItem('bookshelf-books') || '[]'); } catch(e) { books = []; }
@@ -532,74 +403,54 @@
     localStorage.setItem('bookshelf-books', JSON.stringify(books));
   }
 
-  function spineStyle(title) {
-    const i = (title.charCodeAt(0) + title.length) % SPINE_COLORS.length;
-    return SPINE_COLORS[i];
-  }
-
-  function initials(title) {
-    return title.split(' ').filter(w => w.length > 0).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+  function dotColor(title) {
+    return DOT_COLORS[(title.charCodeAt(0) + title.length) % DOT_COLORS.length];
   }
 
   function esc(s) {
     return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  function setFilter(f, el) {
-    filter = f;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    render();
+  function formatDate(d) {
+    if (!d) return '';
+    const [y, m, day] = d.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
   }
 
   function render() {
     const total = books.length;
-    const readN = books.filter(b=>b.status==='read').length;
-    const unread = books.filter(b=>b.status==='unread').length;
     document.getElementById('s-total').textContent = total;
-    document.getElementById('s-read').textContent = readN;
-    document.getElementById('s-unread').textContent = unread;
     document.getElementById('header-sub').textContent = total === 0 ? 'Your personal library' : `${total} book${total!==1?'s':''} collected`;
 
-    const list = filter === 'all' ? books : books.filter(b=>b.status===filter);
     const el = document.getElementById('book-list');
 
-    if (list.length === 0) {
+    if (total === 0) {
       el.innerHTML = `<div class="empty">
         <div class="empty-icon">📚</div>
-        <h3>${books.length===0 ? 'Your shelf is empty' : 'No books here'}</h3>
-        <p>${books.length===0 ? 'Tap "Add book" below to start building your library.' : 'Try a different filter.'}</p>
+        <h3>Your shelf is empty</h3>
+        <p>Tap "Add book" below to start building your library.</p>
       </div>`;
       return;
     }
 
-    el.innerHTML = list.map(b => {
-      const realIdx = books.indexOf(b);
-      const [bg, fg] = spineStyle(b.title);
-      const statusLabel = b.status==='read' ? 'Read' : b.status==='reading' ? 'Reading' : 'Unread';
-      return `<div class="book-card">
-        <div class="spine" style="background:${bg};color:${fg}">${initials(b.title)}</div>
-        <div class="book-info">
-          <div class="book-title">${esc(b.title)}</div>
-          <div class="book-author">${esc(b.author)}</div>
-          <div class="book-meta">
-            <span class="badge ${b.status}">${statusLabel}</span>
-            ${b.genre ? `<span class="badge genre">${esc(b.genre)}</span>` : ''}
-            ${b.year ? `<span class="badge year">${b.year}</span>` : ''}
-          </div>
+    const sorted = [...books].sort((a,b) => a.title.localeCompare(b.title));
+
+    el.innerHTML = `<div class="book-list">` + sorted.map(b => {
+      const idx = books.indexOf(b);
+      const sub = [b.author, b.genre].filter(Boolean).join(' · ');
+      return `<div class="book-row">
+        <div class="row-dot" style="background:${dotColor(b.title)}"></div>
+        <div class="row-info">
+          <div class="row-title">${esc(b.title)}</div>
+          <div class="row-sub">${esc(sub)}</div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
-          <button class="delete-btn" onclick="deleteBook(${realIdx})">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2L5,6"/><path d="M10,11v6"/><path d="M14,11v6"/><path d="M9,6V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
-          </button>
-          <select class="status-select" onchange="changeStatus(${realIdx},this.value)">
-            <option value="unread" ${b.status==='unread'?'selected':''}>Unread</option>
-            <option value="reading" ${b.status==='reading'?'selected':''}>Reading</option>
-            <option value="read" ${b.status==='read'?'selected':''}>Read</option>
-          </select>
-        </div>
+        <div class="row-date">${formatDate(b.date)}</div>
+        <button class="delete-btn" onclick="deleteBook(${idx})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2L5,6"/><path d="M10,11v6M14,11v6"/><path d="M9,6V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
+        </button>
       </div>`;
-    }).join('');
+    }).join('') + `</div>`;
   }
 
   function addBook() {
@@ -609,14 +460,12 @@
     books.push({
       title, author,
       genre: document.getElementById('f-genre').value.trim(),
-      year: document.getElementById('f-year').value ? parseInt(document.getElementById('f-year').value) : null,
-      status: document.getElementById('f-status').value,
+      date: document.getElementById('f-date').value,
       notes: document.getElementById('f-notes').value.trim(),
       added: Date.now()
     });
     save();
-    ['f-title','f-author','f-genre','f-year','f-notes'].forEach(id => document.getElementById(id).value='');
-    document.getElementById('f-status').value = 'unread';
+    ['f-title','f-author','f-genre','f-date','f-notes'].forEach(id => document.getElementById(id).value='');
     showToast(`"${title}" added!`, 'success');
     switchTab('library');
     render();
@@ -625,14 +474,9 @@
   function deleteBook(idx) {
     const name = books[idx].title;
     if (!confirm(`Remove "${name}" from your library?`)) return;
-    books.splice(idx,1);
+    books.splice(idx, 1);
     save(); render();
     showToast('Book removed', '');
-  }
-
-  function changeStatus(idx, val) {
-    books[idx].status = val;
-    save(); render();
   }
 
   function doSearch() {
@@ -645,31 +489,27 @@
     );
 
     if (matches.length === 0) {
-      out.innerHTML = `<div class="search-result-banner not-found">
+      out.innerHTML = `<div class="result-banner not-found">
         Not in your library
-        <p>No books matching "${esc(q)}" found. Tap Add to add it.</p>
+        <p>No books matching "${esc(q)}" found.</p>
       </div>`;
       return;
     }
 
-    out.innerHTML = `<div class="search-result-banner found">
+    out.innerHTML = `<div class="result-banner found">
         Found ${matches.length} book${matches.length>1?'s':''}
-      </div>` +
+      </div><div class="book-list">` +
       matches.map(b => {
-        const [bg, fg] = spineStyle(b.title);
-        const statusLabel = b.status==='read'?'Read':b.status==='reading'?'Reading':'Unread';
-        return `<div class="book-card" style="margin-bottom:8px;">
-          <div class="spine" style="background:${bg};color:${fg}">${initials(b.title)}</div>
-          <div class="book-info">
-            <div class="book-title">${esc(b.title)}</div>
-            <div class="book-author">${esc(b.author)}</div>
-            <div class="book-meta">
-              <span class="badge ${b.status}">${statusLabel}</span>
-              ${b.genre?`<span class="badge genre">${esc(b.genre)}</span>`:''}
-            </div>
+        const sub = [b.author, b.genre].filter(Boolean).join(' · ');
+        return `<div class="book-row">
+          <div class="row-dot" style="background:${dotColor(b.title)}"></div>
+          <div class="row-info">
+            <div class="row-title">${esc(b.title)}</div>
+            <div class="row-sub">${esc(sub)}</div>
           </div>
+          <div class="row-date">${formatDate(b.date)}</div>
         </div>`;
-      }).join('');
+      }).join('') + `</div>`;
   }
 
   function switchTab(name) {
