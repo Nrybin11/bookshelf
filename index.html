@@ -216,6 +216,14 @@
     .empty h3 { font-family: 'Lora', serif; font-size: 17px; color: var(--text2); margin-bottom: 6px; }
     .empty p { font-size: 13px; line-height: 1.6; }
 
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+      font-size: 14px;
+    }
+
     .form-section { padding: 16px 0; }
     .section-title {
       font-family: 'Lora', serif;
@@ -246,7 +254,6 @@
     .field input:focus, .field textarea:focus { border-color: var(--accent); }
     .field input[type="date"] { color-scheme: dark; }
     .field textarea { resize: none; min-height: 80px; line-height: 1.5; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .btn-add {
       width: 100%;
@@ -263,6 +270,7 @@
       transition: opacity 0.15s, transform 0.1s;
     }
     .btn-add:active { opacity: 0.85; transform: scale(0.99); }
+    .btn-add:disabled { opacity: 0.5; }
 
     .search-wrap { position: relative; padding: 14px 0 10px; }
     .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
@@ -327,10 +335,10 @@
 
   <div id="panel-library" class="panel active">
     <div class="stat-banner">
-      <span class="num" id="s-total">0</span>
+      <span class="num" id="s-total">—</span>
       <span class="label">books in your library</span>
     </div>
-    <div id="book-list"></div>
+    <div id="book-list"><div class="loading">Loading your library...</div></div>
   </div>
 
   <div id="panel-add" class="panel">
@@ -344,21 +352,15 @@
         <label>Author *</label>
         <input type="text" id="f-author" placeholder="e.g. Matt Haig" autocomplete="off" />
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Genre</label>
-          <input type="text" id="f-genre" placeholder="Fiction" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label>Date purchased</label>
-          <input type="date" id="f-date" />
-        </div>
+      <div class="field">
+        <label>Date Purchased</label>
+        <input type="date" id="f-date" value="2019-01-19"/>
       </div>
       <div class="field">
         <label>Notes (optional)</label>
         <textarea id="f-notes" placeholder="Where you bought it, thoughts..."></textarea>
       </div>
-      <button class="btn-add" onclick="addBook()">Add to library</button>
+      <button class="btn-add" id="btn-add" onclick="addBook()">Add to library</button>
     </div>
   </div>
 
@@ -389,19 +391,27 @@
 
 <div id="toast" class="toast"></div>
 
-<script>
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDTQYNgGbxBH7-4GGIY-f9ZYfQxKimLeTg",
+    authDomain: "bookshelf-d46f5.firebaseapp.com",
+    projectId: "bookshelf-d46f5",
+    storageBucket: "bookshelf-d46f5.firebasestorage.app",
+    messagingSenderId: "420632054036",
+    appId: "1:420632054036:web:392257839dcbe84f599a01"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const booksCol = collection(db, 'books');
+
   const DOT_COLORS = ['#c8a96e','#7db87a','#b87db8','#7aa0c8','#c87a7a','#c8b96e'];
 
   let books = [];
-
-  function load() {
-    try { books = JSON.parse(localStorage.getItem('bookshelf-books') || '[]'); } catch(e) { books = []; }
-    render();
-  }
-
-  function save() {
-    localStorage.setItem('bookshelf-books', JSON.stringify(books));
-  }
 
   function dotColor(title) {
     return DOT_COLORS[(title.charCodeAt(0) + title.length) % DOT_COLORS.length];
@@ -437,7 +447,6 @@
     const sorted = [...books].sort((a,b) => a.title.localeCompare(b.title));
 
     el.innerHTML = `<div class="book-list">` + sorted.map(b => {
-      const idx = books.indexOf(b);
       const sub = [b.author, b.genre].filter(Boolean).join(' · ');
       return `<div class="book-row">
         <div class="row-dot" style="background:${dotColor(b.title)}"></div>
@@ -446,40 +455,63 @@
           <div class="row-sub">${esc(sub)}</div>
         </div>
         <div class="row-date">${formatDate(b.date)}</div>
-        <button class="delete-btn" onclick="deleteBook(${idx})">
+        <button class="delete-btn" onclick="window._deleteBook('${b.id}', '${esc(b.title)}')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2L5,6"/><path d="M10,11v6M14,11v6"/><path d="M9,6V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
         </button>
       </div>`;
     }).join('') + `</div>`;
+
+    doSearch();
   }
 
-  function addBook() {
+  // Listen for real-time updates from Firestore
+  const q = query(booksCol, orderBy('added', 'desc'));
+  onSnapshot(q, (snapshot) => {
+    books = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+  });
+
+  // Add book
+  window._addBook = async function() {
     const title = document.getElementById('f-title').value.trim();
     const author = document.getElementById('f-author').value.trim();
     if (!title || !author) { showToast('Title and author are required', 'error'); return; }
-    books.push({
-      title, author,
-      genre: document.getElementById('f-genre').value.trim(),
-      date: document.getElementById('f-date').value,
-      notes: document.getElementById('f-notes').value.trim(),
-      added: Date.now()
-    });
-    save();
-    ['f-title','f-author','f-genre','f-date','f-notes'].forEach(id => document.getElementById(id).value='');
-    showToast(`"${title}" added!`, 'success');
-    switchTab('library');
-    render();
-  }
 
-  function deleteBook(idx) {
-    const name = books[idx].title;
-    if (!confirm(`Remove "${name}" from your library?`)) return;
-    books.splice(idx, 1);
-    save(); render();
-    showToast('Book removed', '');
-  }
+    const btn = document.getElementById('btn-add');
+    btn.disabled = true;
+    btn.textContent = 'Adding...';
 
-  function doSearch() {
+    try {
+      await addDoc(booksCol, {
+        title, author,
+        date: document.getElementById('f-date').value,
+        notes: document.getElementById('f-notes').value.trim(),
+        added: Date.now()
+      });
+      ['f-title','f-author','f-date','f-notes'].forEach(id => document.getElementById(id).value='');
+      showToast(`"${title}" added!`, 'success');
+      switchTab('library');
+    } catch(e) {
+      showToast('Error adding book', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Add to library';
+  };
+
+  // Delete book
+  window._deleteBook = async function(id, title) {
+    if (!confirm(`Remove "${title}" from your library?`)) return;
+    try {
+      await deleteDoc(doc(db, 'books', id));
+      showToast('Book removed', '');
+    } catch(e) {
+      showToast('Error removing book', 'error');
+    }
+  };
+
+  // Search (runs against local copy of books)
+  window._doSearch = function() {
     const q = document.getElementById('search-inp').value.trim().toLowerCase();
     const out = document.getElementById('search-out');
     if (!q) { out.innerHTML=''; return; }
@@ -510,7 +542,24 @@
           <div class="row-date">${formatDate(b.date)}</div>
         </div>`;
       }).join('') + `</div>`;
+  };
+
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast show ${type}`;
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.className='toast', 2500);
   }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+
+<script>
+  function addBook() { window._addBook(); }
+  function doSearch() { if (window._doSearch) window._doSearch(); }
 
   function switchTab(name) {
     ['library','add','search'].forEach(n => {
@@ -520,21 +569,7 @@
     if (name==='search') setTimeout(()=>document.getElementById('search-inp').focus(),100);
     if (name==='add') setTimeout(()=>document.getElementById('f-title').focus(),100);
   }
-
-  let toastTimer;
-  function showToast(msg, type) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast show ${type}`;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.className='toast', 2500);
-  }
-
-  load();
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
 </script>
+
 </body>
 </html>
