@@ -2,10 +2,11 @@
   "name": "Bookshelf",
   "short_name": "Bookshelf",
   "description": "Your personal book library",
-  "start_url": "/",
+  "start_url": "/bookshelf/",
+  "scope": "/bookshelf/",
   "display": "standalone",
   "background_color": "#0f0e0c",
-  "theme_color": "#1a1a1a",
+  "theme_color": "#0f0e0c",
   "orientation": "portrait",
   "icons": [
     {

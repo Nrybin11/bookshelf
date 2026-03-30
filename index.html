@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Bookshelf" />
-  <meta name="theme-color" content="#1a1a1a" />
+  <meta name="theme-color" content="#0f0e0c" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <title>Bookshelf</title>
@@ -26,6 +26,9 @@
       --red: #c46a6a;
       --red-bg: rgba(196,106,106,0.12);
       --green: #7db87a;
+      --green-bg: rgba(125,184,122,0.12);
+      --purple: #a87db8;
+      --purple-bg: rgba(168,125,184,0.12);
       --radius: 14px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -75,11 +78,7 @@
       letter-spacing: -0.3px;
     }
 
-    .app-header p {
-      font-size: 12px;
-      color: var(--text3);
-      margin-top: 1px;
-    }
+    .app-header p { font-size: 12px; color: var(--text3); margin-top: 1px; }
 
     .scroll-area {
       padding-top: calc(var(--safe-top) + 70px);
@@ -132,12 +131,7 @@
       align-items: baseline;
       gap: 8px;
     }
-    .stat-banner .num {
-      font-family: 'Lora', serif;
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--accent);
-    }
+    .stat-banner .num { font-family: 'Lora', serif; font-size: 28px; font-weight: 600; color: var(--accent); }
     .stat-banner .label { font-size: 14px; color: var(--text2); }
 
     .book-list {
@@ -160,13 +154,7 @@
     .book-row:last-child { border-bottom: none; }
     .book-row:active { background: var(--bg3); }
 
-    .row-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
+    .row-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .row-info { flex: 1; min-width: 0; }
 
     .row-title {
@@ -188,11 +176,24 @@
       text-overflow: ellipsis;
     }
 
-    .row-date {
-      font-size: 11px;
-      color: var(--text3);
-      flex-shrink: 0;
-      text-align: right;
+    .row-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+
+    .row-date { font-size: 11px; color: var(--text3); text-align: right; }
+
+    .format-badges { display: flex; gap: 3px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .fmt-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 100px;
+      background: var(--accent-bg, rgba(200,169,110,0.12));
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .fmt-badge.wish {
+      background: var(--purple-bg);
+      color: var(--purple);
     }
 
     .delete-btn {
@@ -207,23 +208,14 @@
     }
     .delete-btn:active { color: var(--red); }
 
-    .empty {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text3);
-    }
+    .empty { text-align: center; padding: 48px 20px; color: var(--text3); }
     .empty-icon { font-size: 40px; margin-bottom: 12px; }
     .empty h3 { font-family: 'Lora', serif; font-size: 17px; color: var(--text2); margin-bottom: 6px; }
     .empty p { font-size: 13px; line-height: 1.6; }
 
-    /* Loading state */
-    .loading {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text3);
-      font-size: 14px;
-    }
+    .loading { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 14px; }
 
+    /* Form */
     .form-section { padding: 16px 0; }
     .section-title {
       font-family: 'Lora', serif;
@@ -254,6 +246,82 @@
     .field input:focus, .field textarea:focus { border-color: var(--accent); }
     .field input[type="date"] { color-scheme: dark; }
     .field textarea { resize: none; min-height: 80px; line-height: 1.5; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Format multi-select */
+    .format-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .format-option {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-user-select: none;
+    }
+
+    .format-option input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+      cursor: pointer;
+      padding: 0;
+      border-radius: 4px;
+    }
+
+    .format-option span { font-size: 14px; color: var(--text2); }
+    .format-option.checked { border-color: var(--accent); background: rgba(200,169,110,0.07); }
+    .format-option.checked span { color: var(--text); }
+
+    /* Wishlist toggle */
+    .wishlist-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .wishlist-toggle.checked { border-color: var(--purple); background: var(--purple-bg); }
+
+    .wishlist-toggle-label { font-size: 14px; color: var(--text2); }
+    .wishlist-toggle.checked .wishlist-toggle-label { color: var(--purple); }
+
+    .toggle-switch {
+      width: 42px;
+      height: 24px;
+      background: var(--bg3);
+      border-radius: 100px;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      border: 0.5px solid var(--border2);
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: var(--text3);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .wishlist-toggle.checked .toggle-switch { background: var(--purple-bg); border-color: var(--purple); }
+    .wishlist-toggle.checked .toggle-switch::after { transform: translateX(18px); background: var(--purple); }
 
     .btn-add {
       width: 100%;
@@ -271,7 +339,9 @@
     }
     .btn-add:active { opacity: 0.85; transform: scale(0.99); }
     .btn-add:disabled { opacity: 0.5; }
+    .btn-add.wishlist-mode { background: var(--purple); }
 
+    /* Search */
     .search-wrap { position: relative; padding: 14px 0 10px; }
     .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
     .search-wrap input {
@@ -296,9 +366,23 @@
       font-size: 14px;
       font-weight: 500;
     }
-    .result-banner.found { background: rgba(125,184,122,0.12); color: var(--green); }
+    .result-banner.found { background: var(--green-bg); color: var(--green); }
     .result-banner.not-found { background: var(--red-bg); color: var(--red); }
     .result-banner p { font-size: 12px; font-weight: 400; margin-top: 3px; opacity: 0.8; }
+
+    /* Wishlist panel header */
+    .wish-stat-banner {
+      margin: 16px 0 12px;
+      padding: 14px 16px;
+      background: var(--purple-bg);
+      border: 0.5px solid rgba(168,125,184,0.2);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .wish-stat-banner .num { font-family: 'Lora', serif; font-size: 28px; font-weight: 600; color: var(--purple); }
+    .wish-stat-banner .label { font-size: 14px; color: var(--purple); opacity: 0.7; }
 
     .toast {
       position: fixed;
@@ -333,6 +417,7 @@
 
 <div class="scroll-area">
 
+  <!-- Library -->
   <div id="panel-library" class="panel active">
     <div class="stat-banner">
       <span class="num" id="s-total">—</span>
@@ -341,6 +426,16 @@
     <div id="book-list"><div class="loading">Loading your library...</div></div>
   </div>
 
+  <!-- Wishlist -->
+  <div id="panel-wishlist" class="panel">
+    <div class="wish-stat-banner">
+      <span class="num" id="s-wish">—</span>
+      <span class="label">books on your wishlist</span>
+    </div>
+    <div id="wish-list"><div class="loading">Loading wishlist...</div></div>
+  </div>
+
+  <!-- Add -->
   <div id="panel-add" class="panel">
     <div class="form-section">
       <div class="section-title">New book</div>
@@ -352,18 +447,52 @@
         <label>Author *</label>
         <input type="text" id="f-author" placeholder="e.g. Matt Haig" autocomplete="off" />
       </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Genre</label>
+          <input type="text" id="f-genre" placeholder="Fiction" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>Date purchased</label>
+          <input type="date" id="f-date" />
+        </div>
+      </div>
       <div class="field">
-        <label>Date Purchased</label>
-        <input type="date" id="f-date" />
+        <label>Format</label>
+        <div class="format-options">
+          <label class="format-option" id="fmt-paperback">
+            <input type="checkbox" value="Paperback" onchange="updateFormatOption(this)" />
+            <span>Paperback</span>
+          </label>
+          <label class="format-option" id="fmt-hardcover">
+            <input type="checkbox" value="Hardcover" onchange="updateFormatOption(this)" />
+            <span>Hardcover</span>
+          </label>
+          <label class="format-option" id="fmt-audible">
+            <input type="checkbox" value="Audible" onchange="updateFormatOption(this)" />
+            <span>Audible</span>
+          </label>
+          <label class="format-option" id="fmt-ebook">
+            <input type="checkbox" value="Ebook" onchange="updateFormatOption(this)" />
+            <span>Ebook</span>
+          </label>
+        </div>
       </div>
       <div class="field">
         <label>Notes (optional)</label>
         <textarea id="f-notes" placeholder="Where you bought it, thoughts..."></textarea>
       </div>
+      <div class="field">
+        <div class="wishlist-toggle" id="wishlist-toggle" onclick="toggleWishlist()">
+          <span class="wishlist-toggle-label">Add to wishlist instead</span>
+          <div class="toggle-switch"></div>
+        </div>
+      </div>
       <button class="btn-add" id="btn-add" onclick="addBook()">Add to library</button>
     </div>
   </div>
 
+  <!-- Search -->
   <div id="panel-search" class="panel">
     <div class="search-wrap">
       <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -379,9 +508,13 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
     Library
   </button>
+  <button class="nav-btn" id="nav-wishlist" onclick="switchTab('wishlist')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    Wishlist
+  </button>
   <button class="nav-btn" id="nav-add" onclick="switchTab('add')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-    Add book
+    Add
   </button>
   <button class="nav-btn" id="nav-search" onclick="switchTab('search')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -391,7 +524,6 @@
 
 <div id="toast" class="toast"></div>
 
-<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -408,10 +540,12 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const booksCol = collection(db, 'books');
+  const wishCol = collection(db, 'wishlist');
 
   const DOT_COLORS = ['#c8a96e','#7db87a','#b87db8','#7aa0c8','#c87a7a','#c8b96e'];
 
   let books = [];
+  let wishlist = [];
 
   function dotColor(title) {
     return DOT_COLORS[(title.charCodeAt(0) + title.length) % DOT_COLORS.length];
@@ -428,120 +562,131 @@
     return `${months[parseInt(m)-1]} ${parseInt(day)}, ${y}`;
   }
 
-  function render() {
+  function bookRowHTML(b, collectionName, showDelete = true) {
+    const sub = [b.author, b.genre].filter(Boolean).join(' · ');
+    const formats = (b.formats || []);
+    const isWish = collectionName === 'wishlist';
+    return `<div class="book-row">
+      <div class="row-dot" style="background:${dotColor(b.title)}"></div>
+      <div class="row-info">
+        <div class="row-title">${esc(b.title)}</div>
+        <div class="row-sub">${esc(sub)}</div>
+      </div>
+      <div class="row-right">
+        <div class="row-date">${formatDate(b.date)}</div>
+        ${formats.length > 0 ? `<div class="format-badges">${formats.map(f => `<span class="fmt-badge${isWish?' wish':''}">${esc(f)}</span>`).join('')}</div>` : ''}
+      </div>
+      ${showDelete ? `<button class="delete-btn" onclick="window._deleteBook('${b.id}','${esc(b.title)}','${collectionName}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2L5,6"/><path d="M10,11v6M14,11v6"/><path d="M9,6V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
+      </button>` : ''}
+    </div>`;
+  }
+
+  function renderLibrary() {
     const total = books.length;
     document.getElementById('s-total').textContent = total;
     document.getElementById('header-sub').textContent = total === 0 ? 'Your personal library' : `${total} book${total!==1?'s':''} collected`;
-
     const el = document.getElementById('book-list');
-
     if (total === 0) {
-      el.innerHTML = `<div class="empty">
-        <div class="empty-icon">📚</div>
-        <h3>Your shelf is empty</h3>
-        <p>Tap "Add book" below to start building your library.</p>
-      </div>`;
+      el.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><h3>Your shelf is empty</h3><p>Tap "Add" below to start building your library.</p></div>`;
       return;
     }
-
     const sorted = [...books].sort((a,b) => a.title.localeCompare(b.title));
-
-    el.innerHTML = `<div class="book-list">` + sorted.map(b => {
-      const sub = [b.author, b.genre].filter(Boolean).join(' · ');
-      return `<div class="book-row">
-        <div class="row-dot" style="background:${dotColor(b.title)}"></div>
-        <div class="row-info">
-          <div class="row-title">${esc(b.title)}</div>
-          <div class="row-sub">${esc(sub)}</div>
-        </div>
-        <div class="row-date">${formatDate(b.date)}</div>
-        <button class="delete-btn" onclick="window._deleteBook('${b.id}', '${esc(b.title)}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2L5,6"/><path d="M10,11v6M14,11v6"/><path d="M9,6V4a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1v2"/></svg>
-        </button>
-      </div>`;
-    }).join('') + `</div>`;
-
-    doSearch();
+    el.innerHTML = `<div class="book-list">` + sorted.map(b => bookRowHTML(b, 'books')).join('') + `</div>`;
   }
 
-  // Listen for real-time updates from Firestore
-  const q = query(booksCol, orderBy('added', 'desc'));
-  onSnapshot(q, (snapshot) => {
-    books = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    render();
+  function renderWishlist() {
+    const total = wishlist.length;
+    document.getElementById('s-wish').textContent = total;
+    const el = document.getElementById('wish-list');
+    if (total === 0) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">✨</div><h3>Wishlist is empty</h3><p>Tap "Add" and toggle "Add to wishlist" to save books you want.</p></div>`;
+      return;
+    }
+    const sorted = [...wishlist].sort((a,b) => a.title.localeCompare(b.title));
+    el.innerHTML = `<div class="book-list">` + sorted.map(b => bookRowHTML(b, 'wishlist')).join('') + `</div>`;
+  }
+
+  // Real-time listeners
+  onSnapshot(query(booksCol, orderBy('added','desc')), snap => {
+    books = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderLibrary();
+    if (window._doSearch) window._doSearch();
   });
 
-  // Add book
-  window._addBook = async function() {
+  onSnapshot(query(wishCol, orderBy('added','desc')), snap => {
+    wishlist = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderWishlist();
+  });
+
+  window._addBook = async function(isWishlist) {
     const title = document.getElementById('f-title').value.trim();
     const author = document.getElementById('f-author').value.trim();
     if (!title || !author) { showToast('Title and author are required', 'error'); return; }
+
+    const formats = Array.from(document.querySelectorAll('.format-option input:checked')).map(cb => cb.value);
 
     const btn = document.getElementById('btn-add');
     btn.disabled = true;
     btn.textContent = 'Adding...';
 
     try {
-      await addDoc(booksCol, {
+      const col = isWishlist ? wishCol : booksCol;
+      await addDoc(col, {
         title, author,
+        genre: document.getElementById('f-genre').value.trim(),
         date: document.getElementById('f-date').value,
+        formats,
         notes: document.getElementById('f-notes').value.trim(),
         added: Date.now()
       });
-      ['f-title','f-author','f-date','f-notes'].forEach(id => document.getElementById(id).value='');
-      showToast(`"${title}" added!`, 'success');
-      switchTab('library');
+      ['f-title','f-author','f-genre','f-date','f-notes'].forEach(id => document.getElementById(id).value='');
+      document.querySelectorAll('.format-option input').forEach(cb => { cb.checked = false; cb.closest('.format-option').classList.remove('checked'); });
+      showToast(`"${title}" added to ${isWishlist ? 'wishlist' : 'library'}!`, 'success');
+      switchTab(isWishlist ? 'wishlist' : 'library');
     } catch(e) {
       showToast('Error adding book', 'error');
     }
 
     btn.disabled = false;
-    btn.textContent = 'Add to library';
+    btn.textContent = document.getElementById('wishlist-toggle').classList.contains('checked') ? 'Add to wishlist' : 'Add to library';
   };
 
-  // Delete book
-  window._deleteBook = async function(id, title) {
-    if (!confirm(`Remove "${title}" from your library?`)) return;
+  window._deleteBook = async function(id, title, colName) {
+    if (!confirm(`Remove "${title}"?`)) return;
     try {
-      await deleteDoc(doc(db, 'books', id));
-      showToast('Book removed', '');
+      await deleteDoc(doc(db, colName, id));
+      showToast('Removed', '');
     } catch(e) {
       showToast('Error removing book', 'error');
     }
   };
 
-  // Search (runs against local copy of books)
   window._doSearch = function() {
     const q = document.getElementById('search-inp').value.trim().toLowerCase();
     const out = document.getElementById('search-out');
     if (!q) { out.innerHTML=''; return; }
 
-    const matches = books.filter(b =>
+    const allBooks = [...books, ...wishlist];
+    const matches = allBooks.filter(b =>
       b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q)
     );
 
     if (matches.length === 0) {
-      out.innerHTML = `<div class="result-banner not-found">
-        Not in your library
-        <p>No books matching "${esc(q)}" found.</p>
-      </div>`;
+      out.innerHTML = `<div class="result-banner not-found">Not in your library<p>No books matching "${esc(q)}" found.</p></div>`;
       return;
     }
 
-    out.innerHTML = `<div class="result-banner found">
-        Found ${matches.length} book${matches.length>1?'s':''}
-      </div><div class="book-list">` +
-      matches.map(b => {
-        const sub = [b.author, b.genre].filter(Boolean).join(' · ');
-        return `<div class="book-row">
-          <div class="row-dot" style="background:${dotColor(b.title)}"></div>
-          <div class="row-info">
-            <div class="row-title">${esc(b.title)}</div>
-            <div class="row-sub">${esc(sub)}</div>
-          </div>
-          <div class="row-date">${formatDate(b.date)}</div>
-        </div>`;
-      }).join('') + `</div>`;
+    const libMatches = matches.filter(b => books.find(lb => lb.id === b.id));
+    const wishMatches = matches.filter(b => wishlist.find(wb => wb.id === b.id));
+
+    let html = `<div class="result-banner found">Found ${matches.length} book${matches.length>1?'s':''}</div>`;
+    if (libMatches.length) html += `<div class="book-list" style="margin-bottom:8px;">` + libMatches.map(b => bookRowHTML(b,'books',false)).join('') + `</div>`;
+    if (wishMatches.length) {
+      html += `<div style="font-size:12px;color:var(--purple);margin:8px 0 6px;padding-left:2px;">On wishlist</div>`;
+      html += `<div class="book-list">` + wishMatches.map(b => bookRowHTML(b,'wishlist',false)).join('') + `</div>`;
+    }
+    out.innerHTML = html;
   };
 
   function showToast(msg, type) {
@@ -553,21 +698,42 @@
   }
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('/bookshelf/sw.js');
   }
 </script>
 
 <script>
-  function addBook() { window._addBook(); }
+  let isWishlistMode = false;
+
+  function updateFormatOption(cb) {
+    cb.closest('.format-option').classList.toggle('checked', cb.checked);
+  }
+
+  function toggleWishlist() {
+    isWishlistMode = !isWishlistMode;
+    const toggle = document.getElementById('wishlist-toggle');
+    const btn = document.getElementById('btn-add');
+    toggle.classList.toggle('checked', isWishlistMode);
+    btn.textContent = isWishlistMode ? 'Add to wishlist' : 'Add to library';
+    btn.classList.toggle('wishlist-mode', isWishlistMode);
+  }
+
+  function addBook() { if (window._addBook) window._addBook(isWishlistMode); }
   function doSearch() { if (window._doSearch) window._doSearch(); }
 
   function switchTab(name) {
-    ['library','add','search'].forEach(n => {
+    ['library','wishlist','add','search'].forEach(n => {
       document.getElementById('panel-'+n).classList.toggle('active', n===name);
       document.getElementById('nav-'+n).classList.toggle('active', n===name);
     });
     if (name==='search') setTimeout(()=>document.getElementById('search-inp').focus(),100);
     if (name==='add') setTimeout(()=>document.getElementById('f-title').focus(),100);
+    if (name==='add' && !isWishlistMode) {
+      document.getElementById('wishlist-toggle').classList.remove('checked');
+      document.getElementById('btn-add').textContent = 'Add to library';
+      document.getElementById('btn-add').classList.remove('wishlist-mode');
+      isWishlistMode = false;
+    }
   }
 </script>
 
