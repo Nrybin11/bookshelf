@@ -818,13 +818,18 @@
     const btn = document.getElementById('btn-save');
     btn.disabled = true; btn.textContent = 'Saving...';
     const formats = Array.from(document.querySelectorAll('.sheet-format-opt input:checked')).map(cb => cb.value);
+    const newDate = document.getElementById('sheet-date').value;
+    const notes = document.getElementById('sheet-notes').value.trim();
     try {
-      await updateDoc(doc(db, sheetColName, sheetBookId), {
-        date: document.getElementById('sheet-date').value,
-        formats,
-        notes: document.getElementById('sheet-notes').value.trim()
-      });
-      showToast('Saved!', 'success');
+      if (sheetColName === 'wishlist' && newDate) {
+        const book = wishlist.find(b => b.id === sheetBookId);
+        await addDoc(booksCol, { title: book.title, author: book.author, date: newDate, formats, notes, added: Date.now() });
+        await deleteDoc(doc(db, 'wishlist', sheetBookId));
+        showToast('Moved to your library!', 'success');
+      } else {
+        await updateDoc(doc(db, sheetColName, sheetBookId), { date: newDate, formats, notes });
+        showToast('Saved!', 'success');
+      }
       closeSheet();
     } catch(e) { showToast('Error saving', 'error'); }
     btn.disabled = false; btn.textContent = 'Save changes';
